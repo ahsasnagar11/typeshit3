@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-=======
 
-
->>>>>>> f3832c80c0adbe1b0514fd3629f09dc3640bfa3b
 # TypeS#it Dating App
 
 <div align="center">
