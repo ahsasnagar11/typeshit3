@@ -34,7 +34,7 @@ mongoose
   })
   .catch((error) => console.log('Error connecting to MongoDB', error));
 
-/* ================= Registration & Login Endpoints ================= */
+/* Registration & Login Endpoints  */
 
 // Registration endpoint
 app.post('/register', async (req, res) => {
@@ -129,7 +129,7 @@ app.get('/', (req, res) => {
   });
 });
 
-/* ================= Database & Matches Endpoints ================= */
+/* Database & Matches Endpoints  */
 
 // Database test endpoint
 app.get('/test-db', async (req, res) => {

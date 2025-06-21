@@ -40,13 +40,85 @@ const BirthScreen = () => {
     });
   }, []);
 
+  const validateAge = (day, month, year) => {
+    const birthYear = parseInt(year);
+    const birthMonth = parseInt(month);
+    const birthDay = parseInt(day);
+    
+    // Check if year is within allowed range
+    if (birthYear < 1970 || birthYear > 2007) {
+      return false;
+    }
+    
+    // Check if it's a valid date
+    const birthDate = new Date(birthYear, birthMonth - 1, birthDay);
+    if (birthDate.getFullYear() !== birthYear || 
+        birthDate.getMonth() !== birthMonth - 1 || 
+        birthDate.getDate() !== birthDay) {
+      return false;
+    }
+    
+    return true;
+  };
+
+  const handleDayChange = (text) => {
+    const numericText = text.replace(/\D/g, '');
+    
+    // Validate day range (1-31)
+    if (numericText && (parseInt(numericText) > 31 || parseInt(numericText) < 1)) {
+      return;
+    }
+    
+    setDay(numericText);
+    
+    // Auto-navigate to month when day is complete
+    if (numericText.length === 2) {
+      monthRef.current?.focus();
+    }
+  };
+
+  const handleMonthChange = (text) => {
+    const numericText = text.replace(/\D/g, '');
+    
+    // Validate month range (1-12)
+    if (numericText && (parseInt(numericText) > 12 || parseInt(numericText) < 1)) {
+      return;
+    }
+    
+    setMonth(numericText);
+    
+    // Auto-navigate to year when month is complete
+    if (numericText.length === 2) {
+      yearRef.current?.focus();
+    }
+  };
+
+  const handleYearChange = (text) => {
+    const numericText = text.replace(/\D/g, '');
+    
+    // Validate year as user types
+    if (numericText.length === 4) {
+      const yearValue = parseInt(numericText);
+      if (yearValue < 1970 || yearValue > 2007) {
+        return; // Don't update state with invalid year
+      }
+    }
+    
+    setYear(numericText);
+  };
+
   const handleNext = () => {
     if (day.length === 2 && month.length === 2 && year.length === 4) {
+      if (!validateAge(day, month, year)) {
+        Alert.alert('Invalid Date', 'Please enter a valid date.');
+        return;
+      }
+      
       const dateOfBirth = `${day}/${month}/${year}`;
       saveRegistrationProgress('Birth', { dateOfBirth });
       navigation.navigate('Gender');
     } else {
-      Alert.alert('Invalid Input', 'Please enter a valid date of birth.');
+      Alert.alert('Invalid Date', 'Please enter a valid date.');
     }
   };
 
@@ -56,6 +128,7 @@ const BirthScreen = () => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <Text style={styles.title}>Enter your Date of Birth:</Text>
+    
         <View style={styles.card}>
           <View style={styles.dateInputContainer}>
             <TextInput
@@ -64,7 +137,7 @@ const BirthScreen = () => {
               placeholder="DD"
               keyboardType="numeric"
               maxLength={2}
-              onChangeText={(text) => setDay(text.replace(/\D/g, ''))}
+              onChangeText={handleDayChange}
               value={day}
               returnKeyType="next"
               onSubmitEditing={() => monthRef.current?.focus()}
@@ -76,7 +149,7 @@ const BirthScreen = () => {
               placeholder="MM"
               keyboardType="numeric"
               maxLength={2}
-              onChangeText={(text) => setMonth(text.replace(/\D/g, ''))}
+              onChangeText={handleMonthChange}
               value={month}
               returnKeyType="next"
               onSubmitEditing={() => yearRef.current?.focus()}
@@ -88,8 +161,10 @@ const BirthScreen = () => {
               placeholder="YYYY"
               keyboardType="numeric"
               maxLength={4}
-              onChangeText={(text) => setYear(text.replace(/\D/g, ''))}
+              onChangeText={handleYearChange}
               value={year}
+              returnKeyType="done"
+              onSubmitEditing={handleNext}
             />
           </View>
         </View>
@@ -123,6 +198,12 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontFamily: 'Boldonse-Regular',
     color: '#000000',
+    marginBottom: 16,
+  },
+  subtitle: {
+    fontSize: 14,
+    fontFamily: 'Boldonse-Regular',
+    color: '#666666',
     marginBottom: 20,
   },
   card: {

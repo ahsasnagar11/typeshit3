@@ -21,7 +21,7 @@ const carouselData = [
   },
   {
     id: '2',
-    title: 'a movie',
+    title: 'a show',
     image: require('../assets/Screenshot164826.png'),
   },
   {

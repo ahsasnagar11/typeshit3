@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
   fullName: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true},
   dateOfBirth: { type: String, required: true }, // Format "DD/MM/YYYY"
   location: { type: String, required: false },
   gender: { type: String, required: true },
-  datingPreferences: [{ type: String }], // e.g., ["Men", "Women"]
+  datingPreferences: [{ type: String, required: true}], // e.g., ["Men", "Women"]
   type: { type: String, required: true },  // Your sexuality (e.g., Straight, Gay, etc.)
   photos: [{ type: String }],              // General photos from PhotoScreen
   profilePhotos: [{ type: String }],       // Profile photos from ProfilePhotoScreen

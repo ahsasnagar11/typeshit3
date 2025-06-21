@@ -8,10 +8,19 @@ import {
   ActivityIndicator,
   View,
   Animated,
+  Dimensions,
+  StatusBar,
+  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+const getStatusBarHeight = () => {
+  return Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
+};
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const BasicInfo = () => {
   const navigation = useNavigation();
@@ -48,12 +57,17 @@ const BasicInfo = () => {
   }
 
   return (
-    <ImageBackground
-      source={require('../assets/peakpx1.jpg')}
-      style={styles.background}
-      resizeMode="cover"
-    >
-     
+    <>
+      <StatusBar 
+        barStyle="light-content" 
+        backgroundColor="black" 
+        translucent={true} 
+      />
+      <ImageBackground
+        source={require('../assets/peakpx1.jpg')}
+        style={styles.background}
+        resizeMode="cover"
+      >
       <SafeAreaView style={styles.overlay}>
         <Animated.View
           style={[
@@ -61,39 +75,33 @@ const BasicInfo = () => {
             { transform: [{ translateY: dropAnim }], opacity: fadeAnim },
           ]}
         >
-          {/* Line above "WELCOME" */}
-        
-
           {/* Stars above "WELCOME" */}
           <View style={styles.starContainer}>
-            <Ionicons name="star" size={40} color="#FFFFFF" style={styles.star} />
-            <Ionicons name="star" size={60} color="#FFFFFF" style={styles.star} />
-            <Ionicons name="star" size={40} color="#FFFFFF" style={styles.star} />
+            <Ionicons name="star" size={Math.min(40, screenWidth * 0.1)} color="#FFFFFF" style={styles.star} />
+            <Ionicons name="star" size={Math.min(60, screenWidth * 0.15)} color="#FFFFFF" style={styles.star} />
+            <Ionicons name="star" size={Math.min(40, screenWidth * 0.1)} color="#FFFFFF" style={styles.star} />
           </View>
           <View style={styles.line} />
 
           <Text style={styles.welcomeText}>WELCOME</Text>
           <Text style={styles.totext}>TO</Text>
 
-          {/* Line below "TO" */}
-        
-
           <Text style={styles.appName}>TYPES#IT</Text>
           <View style={styles.line} />
           <Text style={styles.headerText}>
-          Similar interests lead to new friends, so tell us—what kind of shit you been on lately?
-
+            Similar interests lead to new friends, so tell us—what kind of shit you been on lately?
           </Text>
         </Animated.View>
 
         <View style={styles.buttonContainer}>
           <Pressable onPress={() => navigation.navigate("Name")} style={styles.button}>
-            <Text style={styles.buttonText}>Next</Text>
-            <Ionicons name="send" size={20} color="#FFFFFF" style={styles.icon} />
+            <Text style={styles.buttonText}>NEXT</Text>
+            <Ionicons name="send" size={Math.min(20, screenWidth * 0.05)} color="#FFFFFF" style={styles.icon} />
           </Pressable>
         </View>
       </SafeAreaView>
     </ImageBackground>
+    </>
   );
 };
 
@@ -109,21 +117,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 170,
+    paddingHorizontal: Math.max(20, screenWidth * 0.05),
+    paddingTop: Math.max(170, screenHeight * 0.2) + getStatusBarHeight(),
+    paddingBottom: Math.max(170, screenHeight * 0.2),
   },
   centerContainer: {
     alignItems: 'center',
   },
   welcomeText: {
     fontFamily: 'Boldonse-Regular',
-    fontSize: 28,
+    fontSize: Math.min(28, screenWidth * 0.07),
     color: '#FFFFFF',
     marginBottom: -5,
   },
   totext: {
     fontFamily: 'Boldonse-Regular',
-    fontSize: 20,
+    fontSize: Math.min(20, screenWidth * 0.05),
     color: '#FFFFFF',
     marginBottom: -10,
   },
@@ -137,31 +146,31 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   line: {
-    height: 8,
+    height: Math.max(8, screenHeight * 0.01),
     width: '85%',
     backgroundColor: '#FFFFFF',
     marginVertical: 5,
   },
   appName: {
     fontFamily: 'Boldonse-Regular',
-    fontSize: 64,
+    fontSize: Math.min(64, screenWidth * 0.16),
     color: '#FFFFFF',
     textAlign: 'center',
     paddingHorizontal: 10,
   },
   headerText: {
-    marginTop:20,
+    marginTop: 20,
     fontFamily: 'Anton-Regular',
-    fontSize: 26,
+    fontSize: Math.min(26, screenWidth * 0.065),
     color: '#FFFFFF',
     textAlign: 'center',
     paddingHorizontal: 10,
   },
   buttonContainer: {
     position: 'absolute',
-    bottom: 15,
-    left: 20,
-    right: 20,
+    bottom: Math.max(15, screenHeight * 0.02),
+    left: Math.max(20, screenWidth * 0.05),
+    right: Math.max(20, screenWidth * 0.05),
     alignItems: 'center',
   },
   button: {
@@ -170,14 +179,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#000000',
-    borderRadius: 24,
-    paddingVertical: 10,
+    borderRadius: Math.min(24, screenWidth * 0.06),
+    paddingVertical: Math.max(10, screenHeight * 0.015),
     elevation: 3,
   },
   buttonText: {
     color: '#FFFFFF',
     fontFamily: 'RollingNoOne-ExtraBold',
-    fontSize: 18,
+    fontSize: Math.min(18, screenWidth * 0.045),
     marginRight: 8,
   },
   icon: {

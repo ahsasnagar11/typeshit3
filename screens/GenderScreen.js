@@ -31,6 +31,7 @@ const GenderScreen = () => {
         setDatingPreferences(data.datingPreferences || []);
       }
     });
+    // FIXED: Use 'Type' key to match the saveRegistrationProgress call
     getRegistrationProgress('Type').then(data => {
       if (data) {
         setSexuality(data.type || '');
@@ -49,6 +50,7 @@ const GenderScreen = () => {
   const handleNext = () => {
     saveRegistrationProgress('Gender', { gender });
     saveRegistrationProgress('Dating', { datingPreferences });
+    // FIXED: This is now consistent - saving 'type' field under 'Type' key
     saveRegistrationProgress('Type', { type: sexuality });
     navigation.navigate('Video');
   };
@@ -76,7 +78,7 @@ const GenderScreen = () => {
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Gender:</Text>
           <View style={styles.optionContainer}>
-            {['Men', 'Women', 'Non-binary'].map(option => (
+            {['Male', 'Female', 'Non-binary'].map(option => (
               <View key={option} style={styles.optionRow}>
                 <Text style={styles.optionText}>{option}</Text>
                 <Pressable onPress={() => setGender(option)}>
@@ -121,7 +123,7 @@ const GenderScreen = () => {
         <View style={{ height: 80 }} />
       </ScrollView>
 
-      {/* Fixed “Next” Button */}
+      {/* Fixed "Next" Button */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={handleNext} style={styles.button}>
           <Text style={styles.buttonText}>Next</Text>

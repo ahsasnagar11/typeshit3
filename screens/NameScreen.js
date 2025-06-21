@@ -20,7 +20,7 @@ const NameScreen = () => {
   const navigation = useNavigation();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  
+  const [emailError, setEmailError] = useState('');
   const [fontsLoaded] = useFonts({
       'RollingNoOne-ExtraBold': require('../assets/fonts/RollingNoOne-ExtraBold.ttf'),
       'Boldonse-Regular': require('../assets/fonts/Boldonse-Regular.ttf'),
@@ -37,11 +37,22 @@ const NameScreen = () => {
     });
   }, []);
 
+  const isValidEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  
   const handleNext = () => {
     if (!fullName.trim()) {
       Alert.alert('Missing Name', 'Please enter your full name.');
       return;
     }
+    if (!email.trim()) {
+      setEmailError('Email is required');
+      return;
+    }
+    if (!isValidEmail(email.trim())) {
+      setEmailError('Enter a valid email address');
+      return;
+    }
+    setEmailError('');
     saveRegistrationProgress('Name', { fullName, email });
     navigation.navigate('Birth');
   };
@@ -66,7 +77,7 @@ const NameScreen = () => {
           <View style={styles.separator} />
 
           <View style={styles.inputWrapper}>
-            <MaterialCommunityIcons name="account-outline" size={22} color="#000" style={styles.icon} />
+            <MaterialCommunityIcons name="account-outline" size={22} color="#000" style={styles.inputIcon} />
             <TextInput
               style={styles.textInput}
               placeholder="Full Name"
@@ -76,24 +87,36 @@ const NameScreen = () => {
             />
           </View>
 
-          <View style={styles.inputWrapper}>
-            <MaterialCommunityIcons name="email-outline" size={22} color="#000" style={styles.icon} />
+          <View style={[styles.inputWrapper, emailError ? styles.inputError : null]}>
+            <MaterialCommunityIcons name="email-outline" size={22} color="#000" style={styles.inputIcon} />
             <TextInput
               style={styles.textInput}
               placeholder="Email"
               placeholderTextColor="#666"
               value={email}
-              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              onChangeText={text => {
+                setEmail(text);
+                if (emailError && (text.trim() === '' || isValidEmail(text.trim()))) {
+                  setEmailError('');
+                }
+              }}
             />
           </View>
-        </View>
+          
+          {/* Email Error Display */}
+          {emailError ? (
+            <Text style={styles.errorText}>{emailError}</Text>
+          ) : null}
 
-        {/* Bottom Button - Updated to match BasicInfo screen */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={handleNext} style={styles.button}>
-            <Text style={styles.buttonText}>Next</Text>
-            <Ionicons name="send" size={20} color="#FFFFFF" style={styles.icon} />
-          </TouchableOpacity>
+          {/* Bottom Button - Updated to match BasicInfo screen */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={handleNext} style={styles.button}>
+              <Text style={styles.buttonText}>NEXT</Text>
+              <Ionicons name="send" size={20} color="#FFFFFF" style={styles.buttonIcon} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -112,7 +135,7 @@ const styles = StyleSheet.create({
   },
   topSection: {
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 40,
   },
   image: {
     width: 300,
@@ -124,6 +147,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', // White section
     borderTopLeftRadius: 50,
     marginTop: 40,
+    minHeight: 400,
     borderTopRightRadius: 50,
     paddingVertical: 30, // Shorter height
     paddingHorizontal: 20,
@@ -175,7 +199,10 @@ const styles = StyleSheet.create({
     borderWidth: 1.5, // Added border
     borderColor: '#000', // Black border
   },
-  icon: {
+  inputError: {
+    borderColor: '#FF0000', // Red border for error state
+  },
+  inputIcon: {
     marginRight: 8,
     color: '#000',
   },
@@ -184,6 +211,16 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 16,
     fontFamily: 'Poppins-Regular',
+  },
+  // Error text styling
+  errorText: {
+    color: '#FF0000',
+    fontSize: 14,
+    fontFamily: 'Poppins-Regular',
+    marginTop: -5,
+    marginBottom: 10,
+    alignSelf: 'flex-start',
+    marginLeft: '10%',
   },
   // Updated button styling to match BasicInfo screen
   buttonContainer: {
@@ -209,7 +246,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginRight: 8,
   },
-  icon: {
+  buttonIcon: {
     marginTop: 1,
   },
 });
